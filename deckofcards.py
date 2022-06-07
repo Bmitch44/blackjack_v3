@@ -56,7 +56,7 @@ class Deck:
 
     # Generate 52 cards
     def build(self):
-        for suit in ['Hearts', 'Clubs', 'Diamonds', 'Spades']:
+        for suit in ['hearts', 'clubs', 'diamonds', 'spades']:
             for val in range(1,14):
                 self.cards.append(Card(suit, val))
 
