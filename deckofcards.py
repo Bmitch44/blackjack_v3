@@ -2,7 +2,7 @@ import random
 from time import sleep
 import pygame as pg
 
-class Card(object):
+class Card:
     def __init__(self, suit, val):
         self.suit = suit
         self.value = val
@@ -44,7 +44,7 @@ class Card(object):
         return f"{val} of {self.suit}"
 
 
-class Deck(object):
+class Deck:
     def __init__(self):
         self.cards = []
         self.build()
