@@ -28,6 +28,11 @@ stay_button_c = d.Button("stay_button_c.png", stay_pos)
 start_button_nc = d.Button("start_button_nc.png", start_pos)
 start_button_c = d.Button("start_button_c.png", start_pos)
 
+you_win = pg.transform.scale(pg.image.load("you_win.jpeg"), (200, 150))
+you_lose = pg.transform.scale(pg.image.load("you_lose.png"), (200, 150))
+
+done = False
+
 while True:
     clock.tick(FPS)
 
@@ -40,19 +45,23 @@ while True:
         if event.type == pg.MOUSEBUTTONDOWN:
             pos = pg.mouse.get_pos()
             if start_button_nc.rect.collidepoint(pos[0], pos[1]):
+                screen.blit(start_button_c.loaded_img, start_pos)
                 sleep(1)
                 deck = d.Deck()
                 deck.shuffle()
                 player.draw(deck, 2)
                 dealer.draw(deck, 2)
             if hit_button_nc.rect.collidepoint(pos[0], pos[1]):
+                screen.blit(hit_button_c.loaded_img, hit_pos)
                 sleep(1)
                 player.draw(deck)
             if stay_button_nc.rect.collidepoint(pos[0], pos[1]):
+                screen.blit(stay_button_c.loaded_img, stay_pos)
                 sleep(1)
                 while dealer.calc_hand_val() < 17:
                     dealer.draw(deck)
                     sleep(1)
+                done = True
                     
         X = 300
         for card in player.hand:
@@ -62,8 +71,41 @@ while True:
         for card in dealer.hand:
             screen.blit(card.loaded_img, (X, 10))
             X += 53
-                
-                
+        
+        if player.calc_hand_val() > 21:
+                screen.blit(you_lose, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+        elif player.calc_hand_val() == 21:
+                screen.blit(you_win, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+
+        if done:
+            if dealer.calc_hand_val() == 21:
+                screen.blit(you_lose, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+            elif dealer.calc_hand_val() > 21:
+                screen.blit(you_win, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+            else:
+                if player.calc_hand_val() > dealer.calc_hand_val():
+                    screen.blit(you_win, (300, 175))
+                    pg.display.update()
+                    sleep(5)
+                    quit()
+                else:
+                    screen.blit(you_lose, (300, 175))
+                    pg.display.update()
+                    sleep(5)
+                    quit()
+
 
         
         screen.blit(start_button_nc.loaded_img, start_pos) 
