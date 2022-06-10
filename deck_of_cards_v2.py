@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+from time import sleep
 
 class Card(object):
     def __init__(self, suit, val):
@@ -38,7 +39,6 @@ class Card(object):
                 card_name += char
         return card_name
 
-        
         
 
 class Deck:
@@ -104,6 +104,97 @@ class Player:
             else:
                 sum += card.value
         return sum
+
+
+class Game:
+    def __init__(self):
+        self.deck = Deck()
+        self.player = Player()
+        self.dealer = Player()
+        self.fps = 60
+
+    def set_up_display(self, window):
+        # initializes pygame, prints successes and failures
+        successes, failures = pg.init()
+        print(f"{successes} successes and {failures} failures")
+
+        self.screen = pg.display.set_mode((window))
+        self.clock = pg.time.Clock()
+        pg.display.set_caption("Blackjack")
+
+    def set_up_buttons(self, hit_pos, stay_pos, start_pos):
+        self.hit_button_nc = Button("hit_button_nc.png", hit_pos)
+        self.hit_button_c = Button("hit_button_c.png", hit_pos)
+        self.stay_button_nc = Button("stay_button_nc.png", stay_pos)
+        self.stay_button_c = Button("stay_button_c.png", stay_pos)
+        self.start_button_nc = Button("start_button_nc.png", start_pos)
+        self.start_button_c = Button("start_button_c.png", start_pos)
+
+        self.you_win = pg.transform.scale(pg.image.load("you_win.jpeg"), (200, 150))
+        self.you_lose = pg.transform.scale(pg.image.load("you_lose.png"), (200, 150))
+
+    def start(self):
+        sleep(1)
+        self.deck.shuffle()
+        self.player.draw(self.deck, 2)
+        self.dealer.draw(self.deck, 2)
+
+    def hit(self):
+        sleep(1)
+        self.player.draw(self.deck)
+
+    def stay(self):
+        sleep(1)
+        while self.dealer.calc_hand_val() < 17:
+            self.dealer.draw(self.deck)
+            sleep(1)
+    
+    def display_cards(self):
+        X = 300
+        for card in self.player.hand:
+            self.screen.blit(card.loaded_img, (X, 410))
+            X += 53
+        X = 300
+        for card in self.dealer.hand:
+            self.screen.blit(card.loaded_img, (X, 10))
+            X += 53
+
+    def finish_game(self, bool):
+        if self.player.calc_hand_val() > 21:
+                self.screen.blit(self.you_lose, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+        elif self.player.calc_hand_val() == 21:
+                self.screen.blit(self.you_win, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+
+        if bool:
+            if self.dealer.calc_hand_val() == 21:
+                self.screen.blit(self.you_lose, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+            elif self.dealer.calc_hand_val() > 21:
+                self.screen.blit(self.you_win, (300, 175))
+                pg.display.update()
+                sleep(5)
+                quit()
+            else:
+                if self.player.calc_hand_val() > self.dealer.calc_hand_val():
+                    self.screen.blit(self.you_win, (300, 175))
+                    pg.display.update()
+                    sleep(5)
+                    quit()
+                else:
+                    self.screen.blit(self.you_lose, (300, 175))
+                    pg.display.update()
+                    sleep(5)
+                    quit()
+
+
 
 # d = Deck()
 # d.shuffle()
