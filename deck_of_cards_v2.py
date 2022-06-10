@@ -107,21 +107,13 @@ class Player:
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, display):
         self.deck = Deck()
         self.player = Player()
         self.dealer = Player()
         self.fps = 60
-
-    def set_up_display(self, window):
-        # initializes pygame, prints successes and failures
-        successes, failures = pg.init()
-        print(f"{successes} successes and {failures} failures")
-
-        self.screen = pg.display.set_mode((window))
-        self.clock = pg.time.Clock()
-        pg.display.set_caption("Blackjack")
-
+        self.screen = display
+        
     def set_up_buttons(self, hit_pos, stay_pos, start_pos):
         self.hit_button_nc = Button("hit_button_nc.png", hit_pos)
         self.hit_button_c = Button("hit_button_c.png", hit_pos)
@@ -163,36 +155,38 @@ class Game:
         if self.player.calc_hand_val() > 21:
                 self.screen.blit(self.you_lose, (300, 175))
                 pg.display.update()
-                sleep(5)
-                quit()
+                sleep(2)
+                return True
         elif self.player.calc_hand_val() == 21:
                 self.screen.blit(self.you_win, (300, 175))
                 pg.display.update()
-                sleep(5)
-                quit()
+                sleep(2)
+                return True
 
         if bool:
             if self.dealer.calc_hand_val() == 21:
                 self.screen.blit(self.you_lose, (300, 175))
                 pg.display.update()
-                sleep(5)
-                quit()
+                sleep(2)
+                return True
             elif self.dealer.calc_hand_val() > 21:
                 self.screen.blit(self.you_win, (300, 175))
                 pg.display.update()
-                sleep(5)
-                quit()
+                sleep(2)
+                return True
             else:
                 if self.player.calc_hand_val() > self.dealer.calc_hand_val():
                     self.screen.blit(self.you_win, (300, 175))
                     pg.display.update()
-                    sleep(5)
-                    quit()
+                    sleep(2)
+                    return True
                 else:
                     self.screen.blit(self.you_lose, (300, 175))
                     pg.display.update()
-                    sleep(5)
-                    quit()
+                    sleep(2)
+                    return True
+        else:
+            return False
 
 
 
