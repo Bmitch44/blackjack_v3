@@ -7,6 +7,7 @@ class Card(object):
         self.suit = suit
         self.value = val
         self.initialize_img_file(suit, val)
+        self.back_of_card = pg.transform.scale(pg.image.load("back_of_card.png"), (50, 80))
         self.loaded_img = pg.transform.scale(pg.image.load(self.img_file_name), (50, 80))
         self.rect = self.loaded_img.get_rect()
     
@@ -146,15 +147,26 @@ class Game:
             sleep(1)
     
     # displays the cards of each hand on the screen
-    def display_cards(self):
+    def display_cards(self, bool):
         X = 300
         for card in self.player.hand:
             self.screen.blit(card.loaded_img, (X, 410))
             X += 53
-        X = 300
-        for card in self.dealer.hand:
-            self.screen.blit(card.loaded_img, (X, 10))
-            X += 53
+
+        if bool:
+            X = 300
+            for card in self.dealer.hand:
+                self.screen.blit(card.loaded_img, (X, 10))
+                X += 53
+        else:
+            X = 300
+            for card in self.dealer.hand:
+                if X == 300:
+                    self.screen.blit(card.loaded_img, (X, 10))
+                    X += 53
+                else:
+                    self.screen.blit(card.back_of_card, (X, 10))
+
 
     # determines winner returns a bool
     def finish_game(self, bool):

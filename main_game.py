@@ -42,7 +42,7 @@ while True:
                     game.stay()
                     done = True
                         
-        game.display_cards()
+        game.display_cards(done)
         
         if game.finish_game(done):
             game.screen.fill(GREEN)
