@@ -114,6 +114,7 @@ class Game:
         self.fps = 60
         self.screen = display
         
+    # sets up buttons in to correct position on the display
     def set_up_buttons(self, hit_pos, stay_pos, start_pos):
         self.hit_button_nc = Button("hit_button_nc.png", hit_pos)
         self.hit_button_c = Button("hit_button_c.png", hit_pos)
@@ -125,22 +126,26 @@ class Game:
         self.you_win = pg.transform.scale(pg.image.load("you_win.jpeg"), (200, 150))
         self.you_lose = pg.transform.scale(pg.image.load("you_lose.png"), (200, 150))
 
+    # Deals 2 cards to player and dealer
     def start(self):
         sleep(1)
         self.deck.shuffle()
         self.player.draw(self.deck, 2)
         self.dealer.draw(self.deck, 2)
 
+    # used when hit button is clicked, draws a card to player hand
     def hit(self):
         sleep(1)
         self.player.draw(self.deck)
 
+    # stops player turn, starts dealer turn
     def stay(self):
         sleep(1)
         while self.dealer.calc_hand_val() < 17:
             self.dealer.draw(self.deck)
             sleep(1)
     
+    # displays the cards of each hand on the screen
     def display_cards(self):
         X = 300
         for card in self.player.hand:
@@ -151,6 +156,7 @@ class Game:
             self.screen.blit(card.loaded_img, (X, 10))
             X += 53
 
+    # determines winner returns a bool
     def finish_game(self, bool):
         if self.player.calc_hand_val() > 21:
                 self.screen.blit(self.you_lose, (300, 175))
@@ -187,12 +193,4 @@ class Game:
                     return True
         else:
             return False
-
-
-
-# d = Deck()
-# d.shuffle()
-
-# p = Player()
-# p.draw(d, 2)
 
