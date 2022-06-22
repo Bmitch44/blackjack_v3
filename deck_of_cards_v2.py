@@ -70,16 +70,12 @@ class Deck:
 
 
 class Button:
-    def __init__(self, png, pos=(0, 0)):
-        self.loaded_img = pg.image.load(png)
+    def __init__(self, png, pos=(0, 0), size=(61,25)):
+        self.loaded_img = pg.transform.scale(pg.image.load(png), size)
         self.rect = self.loaded_img.get_rect()
         self.rect.topleft = pos
-
-    # changes the size of loaded image to  width x hieght
-    def change_img_size(self, width, height):
-        self.loaded_img = pg.transform.scale(self.loaded_img, (width, height))
-
         
+
 class Player:
     def __init__(self):
         self.hand = []
@@ -108,12 +104,25 @@ class Player:
 
 
 class Game:
-    def __init__(self, display):
+    def __init__(self, display, balance=100):
         self.deck = Deck()
         self.player = Player()
         self.dealer = Player()
         self.fps = 60
         self.screen = display
+
+        # for betting
+        self.balance = balance
+        self.bet = 0
+
+    def show_balance(self, string, cord, font_size):
+        font = pg.font.Font('freesansbold.ttf', font_size) 
+        text = font.render(string, True, (0, 0, 0))
+        text_rect = text.get_rect()
+        text_rect.center = (cord)
+        #add text to window
+        self.screen.blit(text, text_rect)
+        
         
     # sets up buttons in to correct position on the display
     def set_up_buttons(self, hit_pos, stay_pos, start_pos):
@@ -124,8 +133,15 @@ class Game:
         self.start_button_nc = Button("start_button_nc.png", start_pos)
         self.start_button_c = Button("start_button_c.png", start_pos)
 
+        # Set up poker chips for bets (1, 5, 10)
+        self.chip_1 = Button("poker_chip_1.png",(590, 365), (50, 50))
+        self.chip_5 = Button("poker_chip_5.png",(643, 365), (50, 50))
+        self.chip_10 = Button("poker_chip_10.jpeg",(696, 365), (50, 50))
+     
+
         self.you_win = pg.transform.scale(pg.image.load("you_win.jpeg"), (200, 150))
         self.you_lose = pg.transform.scale(pg.image.load("you_lose.png"), (200, 150))
+        self.draw = pg.transform.scale(pg.image.load("draw.png"), (200, 150))
 
     # Deals 2 cards to player and dealer
     def start(self):
@@ -177,6 +193,7 @@ class Game:
                 return True
         elif self.player.calc_hand_val() == 21:
                 self.screen.blit(self.you_win, (300, 175))
+                self.balance += 2 * self.bet
                 pg.display.update()
                 sleep(2)
                 return True
@@ -189,12 +206,20 @@ class Game:
                 return True
             elif self.dealer.calc_hand_val() > 21:
                 self.screen.blit(self.you_win, (300, 175))
+                self.balance += 2 * self.bet
                 pg.display.update()
                 sleep(2)
                 return True
             else:
                 if self.player.calc_hand_val() > self.dealer.calc_hand_val():
                     self.screen.blit(self.you_win, (300, 175))
+                    self.balance += 2 * self.bet
+                    pg.display.update()
+                    sleep(2)
+                    return True
+                elif self.player.calc_hand_val() == self.dealer.calc_hand_val():
+                    self.screen.blit(self.draw, (300, 175))
+                    self.balance += self.bet
                     pg.display.update()
                     sleep(2)
                     return True
