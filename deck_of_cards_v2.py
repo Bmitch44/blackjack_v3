@@ -115,14 +115,13 @@ class Game:
         self.balance = balance
         self.bet = 0
 
-    def show_balance(self, string, cord, font_size):
+    def show_text(self, string, cord, font_size):
         font = pg.font.Font('freesansbold.ttf', font_size) 
         text = font.render(string, True, (0, 0, 0))
         text_rect = text.get_rect()
         text_rect.center = (cord)
         #add text to window
         self.screen.blit(text, text_rect)
-        
         
     # sets up buttons in to correct position on the display
     def set_up_buttons(self, hit_pos, stay_pos, start_pos):
