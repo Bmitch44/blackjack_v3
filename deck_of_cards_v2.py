@@ -115,6 +115,7 @@ class Game:
         self.balance = balance
         self.bet = 0
 
+    # will disply any size text anywhere on screen
     def show_text(self, string, cord, font_size):
         font = pg.font.Font('freesansbold.ttf', font_size) 
         text = font.render(string, True, (0, 0, 0))
