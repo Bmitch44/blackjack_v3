@@ -127,21 +127,13 @@ class Game:
     # sets up buttons in to correct position on the display
     def set_up_buttons(self, hit_pos, stay_pos, start_pos):
         self.hit_button_nc = Button("hit_button_nc.png", hit_pos)
-        self.hit_button_c = Button("hit_button_c.png", hit_pos)
-        self.stay_button_nc = Button("stay_button_nc.png", stay_pos)
-        self.stay_button_c = Button("stay_button_c.png", stay_pos)
+        self.stay_button_nc = Button("stay_button_nc.png", stay_pos)   
         self.start_button_nc = Button("start_button_nc.png", start_pos)
-        self.start_button_c = Button("start_button_c.png", start_pos)
-
+    
         # Set up poker chips for bets (1, 5, 10)
         self.chip_1 = Button("poker_chip_1.png",(590, 365), (50, 50))
         self.chip_5 = Button("poker_chip_5.png",(643, 365), (50, 50))
         self.chip_10 = Button("poker_chip_10.jpeg",(696, 365), (50, 50))
-     
-
-        self.you_win = pg.transform.scale(pg.image.load("you_win.jpeg"), (200, 150))
-        self.you_lose = pg.transform.scale(pg.image.load("you_lose.png"), (200, 150))
-        self.draw = pg.transform.scale(pg.image.load("draw.png"), (200, 150))
 
     # Deals 2 cards to player and dealer
     def start(self):
@@ -173,6 +165,8 @@ class Game:
             X = 300
             for card in self.dealer.hand:
                 self.screen.blit(card.loaded_img, (X, 10))
+                pg.display.update()
+                sleep(1)
                 X += 53
         else:
             X = 300
@@ -186,47 +180,48 @@ class Game:
 
     # determines winner returns a bool
     def finish_game(self, bool):
+        sleep_time = 3
         if self.player.calc_hand_val() > 21:
-                self.screen.blit(self.you_lose, (300, 175))
-                pg.display.update()
-                sleep(2)
-                return True
+            self.show_text("Bust! You Lose!", (400, 250), 30)
+            pg.display.update()
+            sleep(sleep_time)
+            return True
         elif self.player.calc_hand_val() == 21:
-                self.screen.blit(self.you_win, (300, 175))
-                self.balance += 2 * self.bet
-                pg.display.update()
-                sleep(2)
-                return True
+            self.show_text("Blackjack! You Win!", (400, 250), 30)
+            self.balance += 2 * self.bet
+            pg.display.update()
+            sleep(sleep_time)
+            return True
 
         if bool:
             if self.dealer.calc_hand_val() == 21:
-                self.screen.blit(self.you_lose, (300, 175))
+                self.show_text("Dealer has Blackjack! You Lose!", (400, 250), 30)
                 pg.display.update()
-                sleep(2)
+                sleep(sleep_time)
                 return True
             elif self.dealer.calc_hand_val() > 21:
-                self.screen.blit(self.you_win, (300, 175))
+                self.show_text("Dealer Bust! You Win!", (400, 250), 30)
                 self.balance += 2 * self.bet
                 pg.display.update()
-                sleep(2)
+                sleep(sleep_time)
                 return True
             else:
                 if self.player.calc_hand_val() > self.dealer.calc_hand_val():
-                    self.screen.blit(self.you_win, (300, 175))
+                    self.show_text(f"Dealer has {self.dealer.calc_hand_val()}, you have {self.player.calc_hand_val()}. You Win!", (400, 250), 30)
                     self.balance += 2 * self.bet
                     pg.display.update()
-                    sleep(2)
+                    sleep(sleep_time)
                     return True
                 elif self.player.calc_hand_val() == self.dealer.calc_hand_val():
-                    self.screen.blit(self.draw, (300, 175))
+                    self.show_text(f"Dealer has {self.dealer.calc_hand_val()}, you have {self.player.calc_hand_val()}. Draw!", (400, 250), 30)
                     self.balance += self.bet
                     pg.display.update()
-                    sleep(2)
+                    sleep(sleep_time)
                     return True
                 else:
-                    self.screen.blit(self.you_lose, (300, 175))
+                    self.show_text(f"Dealer has {self.dealer.calc_hand_val()}, you have {self.player.calc_hand_val()}. You Lose!", (400, 250), 30)
                     pg.display.update()
-                    sleep(2)
+                    sleep(sleep_time)
                     return True
         else:
             return False
